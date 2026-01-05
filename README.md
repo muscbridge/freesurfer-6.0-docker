@@ -11,7 +11,7 @@
 ```bash
 docker --version
 ```
-
+---
 ## Freesurfer 6.0 Docker Container 
 
 #### Step 1: Download This Repo
@@ -33,6 +33,7 @@ cd /path/to/freesurfer-6.0-docker
 docker build -t freesurfer:6.0 .
 ./install.sh
 ```
+---
 ## Run Freesurfer on your data
 - Input the following command into your terminal, being sure to change the paths to your preferred input and output paths
 ```
