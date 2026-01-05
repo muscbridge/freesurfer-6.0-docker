@@ -1,4 +1,4 @@
-<a href="http://www.bridgelab.info" target="_blank"_><img src="https://www.bridge-lab.org/storage/329/9f17e7e8-434b-4d67-85f7-bc57bcd496cc/bridge-logo.png"></a>
+<a href="http://www.bridgelab.info" target="_blank"><img src="https://www.bridge-lab.org/storage/329/9f17e7e8-434b-4d67-85f7-bc57bcd496cc/bridge-logo.png"></a>
 
 ## 🐳 Docker Setup
 
