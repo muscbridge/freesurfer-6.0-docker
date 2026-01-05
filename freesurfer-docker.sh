@@ -1,50 +1,54 @@
 #!/bin/sh
+# POSIX-safe FreeSurfer 6.0 BIDS wrapper
+# Usage: run_freesurfer_bids INPUT_BIDS_ROOT [OUTPUT_ROOT]
 
-# POSIX-safe, portable FreeSurfer BIDS runner
+INPUT_BIDS="$1"
+OUTPUT_ROOT="$2"   # optional
 
-BIDS_ROOT="$1"
 FS_VERSION="6.0"
-IMAGE="freesurfer:6.0"
+DOCKER_IMAGE="freesurfer:6.0"
 
-if [ -z "$BIDS_ROOT" ]; then
-    echo "Usage: run_freesurfer_bids /path/to/BIDS_root"
+# ---- sanity checks ----
+
+if [ -z "$INPUT_BIDS" ]; then
+    echo "Usage: $0 INPUT_BIDS_ROOT [OUTPUT_ROOT]"
     exit 1
 fi
 
-if [ ! -d "$BIDS_ROOT" ]; then
-    echo "Error: BIDS root not found: $BIDS_ROOT"
+if [ ! -d "$INPUT_BIDS" ]; then
+    echo "Error: input folder not found: $INPUT_BIDS"
     exit 1
 fi
 
-# Check that Docker is installed
 if ! command -v docker >/dev/null 2>&1; then
-    echo "Error: Docker is not installed or not in PATH"
+    echo "Error: docker not found in PATH"
     exit 1
 fi
 
-# Check that Docker daemon is running
 if ! docker info >/dev/null 2>&1; then
     echo "Error: Docker is installed but not running"
-    echo "Please start Docker Desktop (macOS/Windows) or the Docker service (Linux)"
     exit 1
 fi
 
+# Set output folder
+if [ -z "$OUTPUT_ROOT" ]; then
+    OUTPUT_ROOT="$INPUT_BIDS/derivatives/Preprocessing/freesurfer/freesurfer_$FS_VERSION"
+fi
 
-DERIV_ROOT="$BIDS_ROOT/derivatives/Preprocessing/freesurfer/freesurfer_$FS_VERSION"
-
-echo "BIDS root: $BIDS_ROOT"
-echo "Output root: $DERIV_ROOT"
+echo "Input BIDS root: $INPUT_BIDS"
+echo "Output root: $OUTPUT_ROOT"
 echo
 
-for SUB_DIR in "$BIDS_ROOT"/sub-*; do
+# ---- loop over subjects and sessions ----
+for SUB_DIR in "$INPUT_BIDS"/sub-*; do
     [ -d "$SUB_DIR" ] || continue
     SUBJECT=`basename "$SUB_DIR"`
 
-    echo "Subject: $SUBJECT"
+    echo "Processing subject: $SUBJECT"
 
     for SES_DIR in "$SUB_DIR"/ses-*; do
         [ -d "$SES_DIR" ] || continue
-        SES=`basename "$SES_DIR"`
+        SES=`basename "$SES_DIR")`
 
         ANAT_DIR="$SES_DIR/anat"
         T1="$ANAT_DIR/${SUBJECT}_${SES}_T1w.nii.gz"
@@ -54,7 +58,7 @@ for SUB_DIR in "$BIDS_ROOT"/sub-*; do
             continue
         fi
 
-        OUTDIR="$DERIV_ROOT/$SUBJECT/$SES"
+        OUTDIR="$OUTPUT_ROOT/$SUBJECT/$SES"
 
         if [ -d "$OUTDIR/surf" ]; then
             echo "  Already processed $SES, skipping"
@@ -68,7 +72,7 @@ for SUB_DIR in "$BIDS_ROOT"/sub-*; do
         docker run --rm \
             -v "$ANAT_DIR:/data:ro" \
             -v "$OUTDIR:/subjects" \
-            "$IMAGE" \
+            "$DOCKER_IMAGE" \
             recon-all \
                 -i "/data/`basename "$T1"`" \
                 -s "${SUBJECT}_${SES}" \
