@@ -12,7 +12,7 @@
 docker --version
 ```
 
-## Freesurfer 6.0 Docker Container ✅
+## Freesurfer 6.0 Docker Container 
 
 #### Step 1: Download This Repo
 - Download the zip file by navigating to the green Code button and selecting Download ZIP
