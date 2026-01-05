@@ -1,18 +1,18 @@
 <a href="http://www.bridgelab.info"><img src="https://www.bridge-lab.org/storage/329/9f17e7e8-434b-4d67-85f7-bc57bcd496cc/bridge-logo.png"></a>
 
-## Docker Setup
+## 🐳 Docker Setup
 
-#### Step 1: Install Docker
-- <b>macOS / Windows</b>: [Download Docker Desktop](https://www.docker.com/products/docker-desktop/)  
+### Step 1: Install Docker
+- <b>macOS / Windows</b>: <span style="color:blue">[Download Docker Desktop](https://www.docker.com/products/docker-desktop/)</span>  
 - <b>Linux</b>: Install Docker Engine via your package manager (`apt`, `yum`, etc.)  
 
-#### Step 2: Check Installation
+### Step 2: Check Installation ✅
 - Verify installation by running:
 ```bash
 docker --version
 ```
 
-## Freesurfer 6.0 Docker Container
+## Freesurfer 6.0 Docker Container ✅
 
 #### Step 1: Download This Repo
 - Download the zip file by navigating to the green Code button and selecting Download ZIP
@@ -34,7 +34,7 @@ docker build -t freesurfer:6.0 .
 ./install.sh
 ```
 ## Run Freesurfer on your data
-
+- Input the following command into your terminal, being sure to change the paths to your preferred input and output paths
 ```
 freesurfer-docker /path/to/BIDS /path/to/output
 ```
