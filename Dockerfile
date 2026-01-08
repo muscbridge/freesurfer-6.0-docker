@@ -4,18 +4,25 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV FREESURFER_HOME=/opt/freesurfer
 ENV SUBJECTS_DIR=/subjects
 
-RUN apt-get update && apt-get install -y \
-    bc \
-    binutils \
-    libgomp1 \
-    libxmu6 \
-    libxt6 \
-    perl \
-    tcsh \
-    wget \
-    unzip \
-    xorg \
+RUN apt-get update && \
+    apt-get install -y software-properties-common && \
+    add-apt-repository universe && \
+    apt-get update && \
+    apt-get install -y \
+        bc \
+        binutils \
+        libgomp1 \
+        libxmu6 \
+        libxt6 \
+        perl \
+        tcsh \
+        wget \
+        unzip \
+        xorg \
+        minc-tools \
     && rm -rf /var/lib/apt/lists/*
+
+
 
 WORKDIR /opt
 

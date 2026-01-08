@@ -1,5 +1,5 @@
 #!/bin/sh
-# POSIX-safe FreeSurfer 6.0 BIDS wrapper
+# FreeSurfer 6.0 BIDS wrapper (Docker)
 # Usage: run_freesurfer_bids INPUT_BIDS_ROOT [OUTPUT_ROOT]
 
 INPUT_BIDS="$1"
@@ -9,7 +9,6 @@ FS_VERSION="6.0"
 DOCKER_IMAGE="freesurfer:6.0"
 
 # ---- sanity checks ----
-
 if [ -z "$INPUT_BIDS" ]; then
     echo "Usage: $0 INPUT_BIDS_ROOT [OUTPUT_ROOT]"
     exit 1
@@ -46,9 +45,17 @@ for SUB_DIR in "$INPUT_BIDS"/sub-*; do
 
     echo "Processing subject: $SUBJECT"
 
-    for SES_DIR in "$SUB_DIR"/ses-*; do
-        [ -d "$SES_DIR" ] || continue
-        SES=`basename "$SES_DIR")`
+    # Determine session folders, or assume single-session
+    SES_DIRS=$(find "$SUB_DIR" -maxdepth 1 -type d -name "ses-*" 2>/dev/null)
+    if [ -z "$SES_DIRS" ]; then
+        SES_DIRS="$SUB_DIR"
+    fi
+
+    for SES_DIR in $SES_DIRS; do
+        SES=`basename "$SES_DIR"`
+        if [ "$SES_DIR" = "$SUB_DIR" ]; then
+            SES="$SUBJECT"
+        fi
 
         ANAT_DIR="$SES_DIR/anat"
         T1="$ANAT_DIR/${SUBJECT}_${SES}_T1w.nii.gz"
@@ -58,25 +65,24 @@ for SUB_DIR in "$INPUT_BIDS"/sub-*; do
             continue
         fi
 
-        OUTDIR="$OUTPUT_ROOT/$SUBJECT/$SES"
+        # Map the parent folder of the session to /subjects in Docker
+        PARENT_DIR="$OUTPUT_ROOT/$SUBJECT"
+        mkdir -p "$PARENT_DIR"
 
-        if [ -d "$OUTDIR/surf" ]; then
+        # Skip if this session is already processed
+        if [ -d "$PARENT_DIR/$SES/surf" ]; then
             echo "  Already processed $SES, skipping"
             continue
         fi
 
-        mkdir -p "$OUTDIR"
-
         echo "  Running FreeSurfer for $SES"
 
         docker run --rm \
-            -v "$ANAT_DIR:/data:ro" \
-            -v "$OUTDIR:/subjects" \
-            "$DOCKER_IMAGE" \
-            recon-all \
-                -i "/data/`basename "$T1"`" \
-                -s "${SUBJECT}_${SES}" \
-                -all
+			-v "$ANAT_DIR:/data:ro" \
+			-v "$PARENT_DIR:/subjects" \
+			"$DOCKER_IMAGE" \
+			bash -c "source /opt/freesurfer/SetUpFreeSurfer.sh && recon-all -i /data/$(basename "$T1") -s $SES -sd /subjects -all"
+
 
         echo "  Finished $SES"
         echo

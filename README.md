@@ -19,7 +19,7 @@ docker --version
 - Or install via CLI by doing
 
 ```
-gh repo clone muscbridge/freesurfer-6.0-docker
+git clone https://github.com/muscbridge/freesurfer-6.0-docker.git
 ```
 - Unzip the folder and, move it to the location of your choice
 -- This could be Desktop, Applications, or any other folder on your machine where you would like to store git repositories
