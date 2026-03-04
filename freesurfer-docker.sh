@@ -1,14 +1,22 @@
 #!/bin/sh
 # FreeSurfer 6.0 BIDS wrapper (Docker)
-# Usage: run_freesurfer_bids INPUT_BIDS_ROOT [OUTPUT_ROOT]
+# Usage: freesurfer-docker INPUT_BIDS_ROOT [OUTPUT_ROOT]
 
 INPUT_BIDS="$1"
 OUTPUT_ROOT="$2"   # optional
 
 FS_VERSION="6.0"
-DOCKER_IMAGE="freesurfer:6.0"
+DOCKER_IMAGE="freesurfer/freesurfer:6.0"
+FS_LICENSE="/Applications/freesurfer/6.0.0/license.txt"
+
 
 # ---- sanity checks ----
+if [ ! -f "$FS_LICENSE" ]; then
+    echo "Error: FreeSurfer license not found: $FS_LICENSE"
+    exit 1
+fi
+
+
 if [ -z "$INPUT_BIDS" ]; then
     echo "Usage: $0 INPUT_BIDS_ROOT [OUTPUT_ROOT]"
     exit 1
@@ -77,11 +85,13 @@ for SUB_DIR in "$INPUT_BIDS"/sub-*; do
 
         echo "  Running FreeSurfer for $SES"
 
-        docker run --rm \
+		docker run --rm \
 			-v "$ANAT_DIR:/data:ro" \
 			-v "$PARENT_DIR:/subjects" \
+			-v "$FS_LICENSE:/opt/freesurfer/.license:ro" \
 			"$DOCKER_IMAGE" \
 			bash -c "source /opt/freesurfer/SetUpFreeSurfer.sh && recon-all -i /data/$(basename "$T1") -s $SES -sd /subjects -all"
+
 
 
         echo "  Finished $SES"
