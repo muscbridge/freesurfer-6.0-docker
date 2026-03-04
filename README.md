@@ -1,6 +1,8 @@
 <a href="http://www.bridgelab.info" target="_blank"><img src="https://www.bridge-lab.org/storage/329/9f17e7e8-434b-4d67-85f7-bc57bcd496cc/bridge-logo.png"></a>
 
-## ✦ Requirements: Docker
+## ✦ Requirements: 
+
+### Docker
 - <b>macOS / Windows</b>: <span style="color:blue">[Download Docker Desktop](https://www.docker.com/products/docker-desktop/)</span>  
 - <b>Linux</b>: Install Docker Engine via your package manager (`apt`, `yum`, etc.)  
 
@@ -8,6 +10,11 @@
 ```bash
 docker --version
 ```
+### BIDS formatted data
+
+- This tool expects a folder containing BIDS formatted raw data as its input.
+- - <a href="https://bids.neuroimaging.io/index.html">Read more about BIDS formatting here.</a>
+
 ---
 ## ✦ Pull the Docker Image
 
