@@ -10,21 +10,38 @@
 ```bash
 docker --version
 ```
+
 ### BIDS formatted data
 
 - This tool expects a folder containing BIDS formatted raw data as its input.
   - <a href="https://bids.neuroimaging.io/index.html">Read more about BIDS formatting here.</a>
 
 ---
-## ✦ Pull the Docker Image
+## ✦ Freesurfer 6.0 Docker Container Setup
+
+#### Step 1: Download This Repo
+- Download the zip file by navigating to the green Code button and selecting Download ZIP
+- Or install via CLI by doing
 
 ```
-docker pull regularsizedryn/freesurfer-6.0-docker:1.0
+gh repo clone muscbridge/freesurfer-6.0-docker
+git clone https://github.com/muscbridge/freesurfer-6.0-docker.git
 ```
+- Unzip the folder and, move it to the location of your choice
+-- This could be Desktop, Applications, or any other folder on your machine where you would like to store git repositories
 
+#### Step 2: Build the Docker image and install
+- Open a Terminal window and change your directory to location you chose in the previous step
+-- Replace `/path/to/freesurfer-6.0-docker` with your freesurfer-6.0-docker folder path
+
+```
+cd /path/to/freesurfer-6.0-docker
+docker build -t freesurfer:6.0 .
+./install.sh
+```
 ---
 ## ✦ Run Freesurfer on your data
-
+- Input the following command into your terminal, being sure to change the paths to your preferred input and output paths
 ```
 freesurfer-docker /path/to/BIDS /path/to/output
 ```
