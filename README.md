@@ -13,7 +13,7 @@ docker --version
 ### BIDS formatted data
 
 - This tool expects a folder containing BIDS formatted raw data as its input.
-- - <a href="https://bids.neuroimaging.io/index.html">Read more about BIDS formatting here.</a>
+  - <a href="https://bids.neuroimaging.io/index.html">Read more about BIDS formatting here.</a>
 
 ---
 ## ✦ Pull the Docker Image
